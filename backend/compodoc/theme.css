@@ -1,0 +1,8 @@
+:root {
+  --primary: #6c63ff; /* Your brand purple */
+  --sidebar-bg: #1a1a2e; /* Space navy sidebar */
+}
+
+.header-title {
+  font-family: 'Poppins', sans-serif;
+}
