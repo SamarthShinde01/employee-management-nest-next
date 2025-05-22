@@ -223,8 +223,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="33"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:33</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="34"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:34</a></div>
                         </td>
                     </tr>
 
@@ -300,8 +300,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="18"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:18</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="19"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:19</a></div>
                         </td>
                     </tr>
 
@@ -347,8 +347,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="23"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:23</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="24"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:24</a></div>
                         </td>
                     </tr>
 
@@ -424,8 +424,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="28"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:28</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="29"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:29</a></div>
                         </td>
                     </tr>
 
@@ -501,8 +501,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="51"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:51</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="53"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:53</a></div>
                         </td>
                     </tr>
 
@@ -548,8 +548,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="46"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:46</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="48"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:48</a></div>
                         </td>
                     </tr>
 
@@ -619,14 +619,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;:milestoneId&#x27;)<br /></code>
+                    <code>@Put(&#x27;/update/:milestoneId&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="38"
-                                    class="link-to-prism">src/milestones/milestones.controller.ts:38</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="39"
+                                    class="link-to-prism">src/milestones/milestones.controller.ts:39</a></div>
                         </td>
                     </tr>
 
@@ -696,6 +696,7 @@
   Param,
   Patch,
   Post,
+  Put,
 } from &#x27;@nestjs/common&#x27;;
 import { MilestonesService } from &#x27;./milestones.service&#x27;;
 import { CreateMilestoneDto, UpdateMilestoneDto } from &#x27;./dto/milestone.dto&#x27;;
@@ -724,9 +725,10 @@ export class MilestonesController {
     return this.milestonesService.createMilestone(data);
   }
 
-  @Patch(&#x27;:milestoneId&#x27;)
+  @Put(&#x27;/update/:milestoneId&#x27;)
   async update(
     @Param(&#x27;milestoneId&#x27;) milestoneId: string,
+    @Body()
     data: UpdateMilestoneDto,
   ) {
     return this.milestonesService.updateMilestone(milestoneId, data);

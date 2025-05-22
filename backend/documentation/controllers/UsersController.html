@@ -771,7 +771,7 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;:id&#x27;)<br />@ApiOperation({summary: &#x27;Update the user&#x27;})<br /></code>
+                    <code>@Put(&#x27;/update/:id&#x27;)<br />@ApiOperation({summary: &#x27;Update the user&#x27;})<br /></code>
                 </td>
             </tr>
 
@@ -1111,7 +1111,7 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
-  @Patch(&#x27;:id&#x27;)
+  @Put(&#x27;/update/:id&#x27;)
   @ApiOperation({ summary: &#x27;Update the user&#x27; })
   async update(@Param(&#x27;id&#x27;) id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.updateUser(id, updateUserDto);

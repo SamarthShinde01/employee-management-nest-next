@@ -277,7 +277,6 @@ export default function DepartmentsPage() {
 								}
 								onChange={(event) => {
 									table.getColumn("name")?.setFilterValue(event.target.value);
-									console.log(event.target.value);
 								}}
 								className="max-w-sm"
 							/>

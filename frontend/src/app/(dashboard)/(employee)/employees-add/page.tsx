@@ -330,9 +330,9 @@ export default function EmployeesAddPage() {
 											</Select>
 										)}
 									/>
-									{errors.department && (
+									{errors?.department && (
 										<p className="text-sm text-red-500">
-											{errors.department.message}
+											{errors?.department.message}
 										</p>
 									)}
 								</div>
@@ -532,6 +532,7 @@ export default function EmployeesAddPage() {
 										id="password"
 										type="password"
 										{...register("password")}
+										autoComplete="password"
 									/>
 									{errors.password && (
 										<p className="text-sm text-red-500">
@@ -554,6 +555,7 @@ export default function EmployeesAddPage() {
 										id="confirmPassword"
 										type="password"
 										{...register("confirmPassword")}
+										autoComplete="confirmPassword"
 									/>
 									{errors.confirmPassword && (
 										<p className="text-sm text-red-500">

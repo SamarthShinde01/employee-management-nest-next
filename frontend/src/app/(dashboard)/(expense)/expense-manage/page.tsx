@@ -45,7 +45,7 @@ import {
 import { useDownloadExcel } from "react-export-table-to-excel";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "@/components/DatePicker";
-import FilterCombobox from "@/components/FilterComboBox";
+import FilterCombobox from "@/components/FilterCombobox";
 import { useRouter } from "next/navigation";
 
 const getFullName = (emp: any) =>

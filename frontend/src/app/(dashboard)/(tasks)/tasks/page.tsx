@@ -104,7 +104,6 @@ export default function EmployeeTasksPage() {
 	});
 
 	const onSubmit = (data: any) => {
-		console.log({ data, user });
 		updateTaskStatus({ data, employeeId: user?.id });
 	};
 

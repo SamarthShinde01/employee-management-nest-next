@@ -30,7 +30,7 @@ import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getDepartments, getUserById, updateUser } from "@/lib/api";
 import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 const editUserSchema = z
 	.object({
@@ -75,20 +75,16 @@ const editUserSchema = z
 
 type EditUserFormData = z.infer<typeof editUserSchema>;
 
-type paramsTypes = {
-	id: string;
-};
-
-export default function EmployeesEditPage({ params }: paramsTypes) {
-	const id = params?.id;
+export default function EmployeesEditPage() {
+	const { id } = useParams<{ id: string }>();
 
 	const [selectedState, setSelectedState] = useState<string>("");
 
 	// Fetch user data
 	const { data: user } = useQuery({
 		queryKey: ["user", id],
-		queryFn: () => getUserById(id),
-		enabled: id!,
+		queryFn: () => getUserById(id!),
+		enabled: !!id,
 	});
 
 	const {

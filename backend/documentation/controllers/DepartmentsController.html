@@ -207,14 +207,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Post()<br /></code>
+                    <code>@Post(&#x27;/create&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="29"
-                                    class="link-to-prism">src/departments/departments.controller.ts:29</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="30"
+                                    class="link-to-prism">src/departments/departments.controller.ts:30</a></div>
                         </td>
                     </tr>
 
@@ -290,8 +290,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="18"
-                                    class="link-to-prism">src/departments/departments.controller.ts:18</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="19"
+                                    class="link-to-prism">src/departments/departments.controller.ts:19</a></div>
                         </td>
                     </tr>
 
@@ -337,8 +337,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="23"
-                                    class="link-to-prism">src/departments/departments.controller.ts:23</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="24"
+                                    class="link-to-prism">src/departments/departments.controller.ts:24</a></div>
                         </td>
                     </tr>
 
@@ -408,14 +408,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Delete(&#x27;:departmentId&#x27;)<br /></code>
+                    <code>@Delete(&#x27;/delete/:departmentId&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="42"
-                                    class="link-to-prism">src/departments/departments.controller.ts:42</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="43"
+                                    class="link-to-prism">src/departments/departments.controller.ts:43</a></div>
                         </td>
                     </tr>
 
@@ -485,14 +485,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;:departmentId&#x27;)<br /></code>
+                    <code>@Put(&#x27;/update/:departmentId&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="34"
-                                    class="link-to-prism">src/departments/departments.controller.ts:34</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="35"
+                                    class="link-to-prism">src/departments/departments.controller.ts:35</a></div>
                         </td>
                     </tr>
 
@@ -562,6 +562,7 @@
   Param,
   Patch,
   Post,
+  Put,
   UseGuards,
 } from &#x27;@nestjs/common&#x27;;
 import { DepartmentsService } from &#x27;./departments.service&#x27;;
@@ -581,12 +582,12 @@ export class DepartmentsController {
   }
 
   // @UseGuards(AuthGuard(&#x27;jwt&#x27;))
-  @Post()
+  @Post(&#x27;/create&#x27;)
   async create(@Body() data: { name: string }) {
     return this.departmentsService.createDepartment(data);
   }
 
-  @Patch(&#x27;:departmentId&#x27;)
+  @Put(&#x27;/update/:departmentId&#x27;)
   async update(
     @Param(&#x27;departmentId&#x27;) departmentId: string,
     @Body() data: { name: string },
@@ -594,7 +595,7 @@ export class DepartmentsController {
     return this.departmentsService.updateDepartment(departmentId, data);
   }
 
-  @Delete(&#x27;:departmentId&#x27;)
+  @Delete(&#x27;/delete/:departmentId&#x27;)
   async remove(@Param(&#x27;departmentId&#x27;) departmentId: string) {
     return this.departmentsService.deleteDepartment(departmentId);
   }

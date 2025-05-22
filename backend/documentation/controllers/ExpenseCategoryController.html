@@ -485,7 +485,7 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;/update/:expenseId&#x27;)<br /></code>
+                    <code>@Put(&#x27;/update/:expenseId&#x27;)<br /></code>
                 </td>
             </tr>
 
@@ -560,8 +560,8 @@
   Delete,
   Get,
   Param,
-  Patch,
   Post,
+  Put,
 } from &#x27;@nestjs/common&#x27;;
 import { ExpenseCategoryService } from &#x27;./expense-category.service&#x27;;
 
@@ -584,7 +584,7 @@ export class ExpenseCategoryController {
     return this.expenseCategoryService.createExpenseCat(data);
   }
 
-  @Patch(&#x27;/update/:expenseId&#x27;)
+  @Put(&#x27;/update/:expenseId&#x27;)
   async update(
     @Param(&#x27;expenseId&#x27;) expenseId: string,
     @Body() data: { name: string },

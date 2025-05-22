@@ -67,7 +67,7 @@ import { useDownloadExcel } from "react-export-table-to-excel";
 import { formatDate } from "@/lib/utils";
 import { DatePickerWithRange } from "@/components/DatePicker";
 import { DateRange } from "react-day-picker";
-import FilterCombobox from "@/components/FilterComboBox";
+import FilterCombobox from "@/components/FilterCombobox";
 
 // === TYPES ===
 type Product = {
@@ -197,7 +197,6 @@ export default function ProductsPage() {
 	};
 
 	const handleSaveEdit = () => {
-		console.log("Saving edit for:", editingProduct);
 		setEditSheetOpen(false);
 	};
 

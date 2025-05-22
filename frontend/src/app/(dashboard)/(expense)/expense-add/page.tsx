@@ -134,8 +134,6 @@ export default function ExpenseAddPage() {
 		}
 	};
 
-	console.log(otherSelected);
-
 	return (
 		<>
 			<DashboardHeader

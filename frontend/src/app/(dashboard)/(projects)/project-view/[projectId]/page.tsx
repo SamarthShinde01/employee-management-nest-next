@@ -98,7 +98,7 @@ const ProjectView = () => {
 								{project.status}
 							</Badge>
 						</div>
-						<p className="mt-4 text-gray-700">{project.description}</p>
+						<p className="mt-4 text-muted-foreground">{project.description}</p>
 					</div>
 
 					{/* Project Details Grid */}
@@ -151,7 +151,7 @@ const ProjectView = () => {
 											{assignment.employee.firstName}{" "}
 											{assignment.employee.lastName}
 										</h3>
-										<p className="text-sm text-gray-600">
+										<p className="text-sm text-muted-foreground">
 											{assignment.employee.jobTitle}
 										</p>
 										<p className="text-xs text-gray-500 mt-1">
@@ -184,13 +184,13 @@ const ProjectView = () => {
 								<tbody className="bg-muted/50 divide-y divide-gray-200">
 									{project?.costAllocations?.map((allocation: any) => (
 										<tr key={allocation.id}>
-											<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-400">
+											<td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-muted-foreground">
 												{allocation.category.name}
 											</td>
-											<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+											<td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
 												{formatINR(Number(allocation.allocatedAmount))}
 											</td>
-											<td className="px-6 py-4 text-sm text-gray-500">
+											<td className="px-6 py-4 text-sm text-muted-foreground">
 												{allocation.description}
 											</td>
 										</tr>
@@ -235,7 +235,7 @@ const ProjectView = () => {
 												{milestone.achievedDate ? "ACHIEVED" : "PENDING"}
 											</Badge>
 										</div>
-										<p className="text-sm text-gray-600">
+										<p className="text-sm text-muted-foreground">
 											Target: {formatDate(milestone.targetDate)}
 										</p>
 									</div>

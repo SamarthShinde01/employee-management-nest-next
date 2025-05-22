@@ -281,7 +281,7 @@
                                 </table>
                             </div>
                         <div class="io-description">
-                            <b>Returns : </b>    <code>Promise&lt;Product&gt;</code>
+                            <b>Returns : </b>    <code>unknown</code>
 
                         </div>
                             <div class="io-description">
@@ -313,8 +313,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="91"
-                                    class="link-to-prism">src/products/products.service.ts:91</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="92"
+                                    class="link-to-prism">src/products/products.service.ts:92</a></div>
                         </td>
                     </tr>
 
@@ -490,8 +490,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="64"
-                                    class="link-to-prism">src/products/products.service.ts:64</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="65"
+                                    class="link-to-prism">src/products/products.service.ts:65</a></div>
                         </td>
                     </tr>
 
@@ -600,8 +600,9 @@ export class ProductsService {
     return product;
   }
 
-  async createProduct(data: CreateProductDto): Promise&lt;Product&gt; {
-    const { name, description, basePrice, categoryId } &#x3D; data;
+  async createProduct(data: CreateProductDto) {
+    console.log(data);
+    const { name, description, categoryId } &#x3D; data;
 
     const productExist &#x3D; await this.prisma.product.findFirst({
       where: { isDeleted: false, name },
@@ -612,7 +613,7 @@ export class ProductsService {
     }
 
     const product &#x3D; await this.prisma.product.create({
-      data: { name, description, basePrice, categoryId },
+      data: { name, description, categoryId },
     });
 
     return product;

@@ -90,7 +90,6 @@ export default function AssignTaskPage() {
 	});
 
 	const onSubmit = (data: AddUserFormData) => {
-		console.log("Form Data on Submit:", data);
 		try {
 			assignTaskFuction(data);
 		} catch (error: any) {

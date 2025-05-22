@@ -52,8 +52,6 @@ export default function ViewProjectMilestones({ params }: typeParams) {
 		enabled: !!projectId,
 	});
 
-	console.log(milestonesData);
-
 	const { mutate: removeMilestone } = useMutation({
 		mutationFn: deleteMilestone,
 		onSuccess: () => {

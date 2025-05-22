@@ -207,14 +207,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Post()<br /></code>
+                    <code>@Post(&#x27;/create&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="20"
-                                    class="link-to-prism">src/products/products.controller.ts:20</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="28"
+                                    class="link-to-prism">src/products/products.controller.ts:28</a></div>
                         </td>
                     </tr>
 
@@ -290,8 +290,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="10"
-                                    class="link-to-prism">src/products/products.controller.ts:10</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="18"
+                                    class="link-to-prism">src/products/products.controller.ts:18</a></div>
                         </td>
                     </tr>
 
@@ -337,8 +337,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="15"
-                                    class="link-to-prism">src/products/products.controller.ts:15</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="23"
+                                    class="link-to-prism">src/products/products.controller.ts:23</a></div>
                         </td>
                     </tr>
 
@@ -408,14 +408,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Delete(&#x27;:productId&#x27;)<br /></code>
+                    <code>@Delete(&#x27;/delete/:productId&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="30"
-                                    class="link-to-prism">src/products/products.controller.ts:30</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="41"
+                                    class="link-to-prism">src/products/products.controller.ts:41</a></div>
                         </td>
                     </tr>
 
@@ -485,14 +485,14 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@Patch(&#x27;:productId&#x27;)<br /></code>
+                    <code>@Put(&#x27;/update/:productId&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="25"
-                                    class="link-to-prism">src/products/products.controller.ts:25</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="33"
+                                    class="link-to-prism">src/products/products.controller.ts:33</a></div>
                         </td>
                     </tr>
 
@@ -554,7 +554,15 @@
 
 
     <div class="tab-pane fade  tab-source-code" id="source">
-        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Controller, Delete, Get, Param, Patch, Post } from &#x27;@nestjs/common&#x27;;
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from &#x27;@nestjs/common&#x27;;
 import { ProductsService } from &#x27;./products.service&#x27;;
 import { CreateProductDto, UpdateProductDto } from &#x27;./dto/products.dto&#x27;;
 
@@ -572,17 +580,20 @@ export class ProductsController {
     return this.productsService.findOneProduct(productId);
   }
 
-  @Post()
-  async create(data: CreateProductDto) {
+  @Post(&#x27;/create&#x27;)
+  async create(@Body() data: CreateProductDto) {
     return this.productsService.createProduct(data);
   }
 
-  @Patch(&#x27;:productId&#x27;)
-  async update(@Param(&#x27;productId&#x27;) productId: string, data: UpdateProductDto) {
+  @Put(&#x27;/update/:productId&#x27;)
+  async update(
+    @Param(&#x27;productId&#x27;) productId: string,
+    @Body() data: UpdateProductDto,
+  ) {
     return this.productsService.updateProduct(productId, data);
   }
 
-  @Delete(&#x27;:productId&#x27;)
+  @Delete(&#x27;/delete/:productId&#x27;)
   async remove(@Param(&#x27;productId&#x27;) productId: string) {
     return this.productsService.deleteProduct(productId);
   }

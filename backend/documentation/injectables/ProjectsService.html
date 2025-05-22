@@ -248,8 +248,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="79"
-                                    class="link-to-prism">src/projects/projects.service.ts:79</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="111"
+                                    class="link-to-prism">src/projects/projects.service.ts:111</a></div>
                         </td>
                     </tr>
 
@@ -317,8 +317,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="251"
-                                    class="link-to-prism">src/projects/projects.service.ts:251</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="283"
+                                    class="link-to-prism">src/projects/projects.service.ts:283</a></div>
                         </td>
                     </tr>
 
@@ -494,8 +494,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="284"
-                                    class="link-to-prism">src/projects/projects.service.ts:284</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="316"
+                                    class="link-to-prism">src/projects/projects.service.ts:316</a></div>
                         </td>
                     </tr>
 
@@ -575,8 +575,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="159"
-                                    class="link-to-prism">src/projects/projects.service.ts:159</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="191"
+                                    class="link-to-prism">src/projects/projects.service.ts:191</a></div>
                         </td>
                     </tr>
 
@@ -704,16 +704,48 @@ export class ProjectsService {
     const project &#x3D; await this.prisma.project.findFirst({
       where: { id: projectId, isDeleted: false },
       include: {
-        projectAssignments: { select: { employeeId: true, role: true } },
+        projectAssignments: {
+          select: {
+            employeeId: true,
+            role: true,
+            assignedAt: true,
+            employee: {
+              select: {
+                firstName: true,
+                lastName: true,
+                jobTitle: true,
+                profileImage: true,
+              },
+            },
+          },
+        },
         costAllocations: {
           select: {
-            categoryId: true,
+            id: true,
+            category: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
             allocatedAmount: true,
             description: true,
           },
         },
+        milestones: {
+          select: {
+            id: true,
+            name: true,
+            targetDate: true,
+            achievedDate: true,
+          },
+        },
       },
     });
+
+    if (!project) {
+      throw new NotFoundException(&#x27;Project does not exists&#x27;);
+    }
 
     return project;
   }
