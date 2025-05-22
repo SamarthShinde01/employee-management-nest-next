@@ -46,10 +46,7 @@ export class ExpensesController {
   }
 
   @Put('/update/:expenseId')
-  async update(
-    @Param('expenseId') expenseId: string,
-    @Body() data: UpdateExpenseDto,
-  ) {
+  async update(@Param('expenseId') expenseId: string, @Body() data: any) {
     return this.expensesService.updateExpense(expenseId, data);
   }
 

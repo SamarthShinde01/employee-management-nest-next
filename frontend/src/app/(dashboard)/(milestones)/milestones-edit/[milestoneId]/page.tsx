@@ -46,12 +46,6 @@ const milestoneSchema = z.object({
 
 type MilestoneFormData = z.infer<typeof milestoneSchema>;
 
-type typeParams = {
-	params: {
-		milestoneId: string;
-	};
-};
-
 export default function MilestoneEditPage() {
 	const { milestoneId } = useParams<{ milestoneId: string }>();
 

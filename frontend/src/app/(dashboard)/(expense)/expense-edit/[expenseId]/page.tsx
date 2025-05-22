@@ -1,18 +1,16 @@
 "use client";
 
 import { z } from "zod";
-import DashboardHeader from "@/components/dashboard-header";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-	getDepartments,
-	getExpense,
-	getExpenseCategories,
-	getProducts,
-	getUsers,
-	updateExpense,
-} from "@/lib/api";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { toast } from "sonner";
+import DashboardHeader from "@/components/dashboard-header";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
 	Select,
 	SelectContent,
@@ -21,42 +19,45 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+	getDepartments,
+	getExpense,
+	getExpenseCategories,
+	getProducts,
+	getUsers,
+	updateExpense,
+} from "@/lib/api";
+
+type UpdateExpenseFormData = z.infer<typeof updateExpenseSchema>;
 
 const updateExpenseSchema = z.object({
-	departmentId: z.string().min(1, "Department Id is required"),
+	departmentId: z.string().min(1, "Department is required"),
 	employeeId: z.string().min(1, "Employee is required"),
 	expenseCatId: z.string().min(1, "Expense category is required"),
 	productId: z.string().min(1, "Product is required"),
 	amount: z
 		.number({ invalid_type_error: "Amount must be a number" })
-		.min(0, "Amount must be greater than or equal to 0"),
+		.min(0.01, "Amount must be greater than 0"),
 	quantity: z
 		.number({ invalid_type_error: "Quantity must be a number" })
 		.min(1, "Quantity must be at least 1"),
 	total: z
 		.number({ invalid_type_error: "Total must be a number" })
-		.min(0, "Total must be greater than or equal to 0"),
+		.min(0.01, "Total must be greater than 0"),
 	date: z.string().min(1, "Date is required"),
 	notes: z.string().min(1, "Notes are required"),
 });
 
-type UpdateExpenseFormData = z.infer<typeof updateExpenseSchema>;
+export default function ExpenseUpdatePage() {
+	const { expenseId } = useParams<{ expenseId: string }>();
+	const router = useRouter();
+	const searchParams = useSearchParams();
+	const redirectUrl = searchParams.get("redirectUrl") || "/expense-manage";
 
-export default function ExpenseUpdatePage({
-	params,
-}: {
-	params: Promise<{ expenseId: string }>;
-}) {
-	const { expenseId } = use(params);
-	const [departId, setDepartId] = useState<string>("all");
-	const [expCatId, setExpCatId] = useState<string>("all");
+	const [departmentFilter, setDepartmentFilter] = useState<string>("");
+	const [categoryFilter, setCategoryFilter] = useState<string>("");
+
 	const {
 		register,
 		handleSubmit,
@@ -72,6 +73,7 @@ export default function ExpenseUpdatePage({
 	const amount = watch("amount");
 	const quantity = watch("quantity");
 
+	// Calculate total whenever amount or quantity changes
 	useEffect(() => {
 		const total = (amount || 0) * (quantity || 0);
 		setValue("total", total);
@@ -82,33 +84,10 @@ export default function ExpenseUpdatePage({
 		queryKey: ["expense", expenseId],
 		queryFn: () => getExpense(expenseId!),
 		enabled: !!expenseId,
-		onSuccess: (data) => {
-			if (data) {
-				reset({
-					departmentId: data.departmentId,
-					employeeId: data.employeeId,
-					expenseCatId: data.expenseCatId,
-					productId: data.productId,
-					amount: Number(data.amount),
-					quantity: data.quantity,
-					total: Number(data.total),
-					date: data.date.split("T")[0], // Format date for input
-					notes: data.notes,
-				});
-				setDepartId(data.departmentId);
-				setExpCatId(data.expenseCatId);
-			}
-		},
-		onError: (error: any) => {
-			const message =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Failed to fetch expense";
-			toast.error(message);
+		onError: (error: Error) => {
+			toast.error(error.message || "Failed to fetch expense");
 		},
 	});
-
-	console.log(expenseData);
 
 	// Fetch other necessary data
 	const { data: departments = [] } = useQuery({
@@ -116,20 +95,13 @@ export default function ExpenseUpdatePage({
 		queryFn: getDepartments,
 	});
 
-	const { data: allEmployees } = useQuery({
+	const { data: employees = [] } = useQuery({
 		queryKey: ["employees"],
 		queryFn: getUsers,
 	});
 
-	const filteredEmployees =
-		departId === "all"
-			? allEmployees
-			: allEmployees?.filter(
-					(employee: any) => employee.departmentId === departId
-			  );
-
-	const { data: expenseCatData } = useQuery({
-		queryKey: ["expenseCat"],
+	const { data: expenseCategories = [] } = useQuery({
+		queryKey: ["expenseCategories"],
 		queryFn: getExpenseCategories,
 	});
 
@@ -138,43 +110,53 @@ export default function ExpenseUpdatePage({
 		queryFn: getProducts,
 	});
 
-	const allProducts = productsData?.products || [];
+	// Filter employees and products based on selections
+	const filteredEmployees = departmentFilter
+		? employees.filter((e: any) => e.departmentId === departmentFilter)
+		: employees;
 
-	const filteredProducts =
-		expCatId === "all"
-			? allProducts
-			: allProducts.filter((product: any) => product.categoryId === expCatId);
+	const filteredProducts = categoryFilter
+		? productsData?.products?.filter(
+				(p: any) => p.categoryId === categoryFilter
+		  )
+		: productsData?.products;
 
-	const searchParams = useSearchParams();
-	const router = useRouter();
-	const redirectUrl = searchParams.get("redirectUrl") || "/expense-manage";
+	// Reset form with expense data when loaded
+	useEffect(() => {
+		if (expenseData) {
+			reset({
+				departmentId: expenseData.departmentId,
+				employeeId: expenseData.employeeId,
+				expenseCatId: expenseData.expenseCatId,
+				productId: expenseData.productId,
+				amount: Number(expenseData.amount),
+				quantity: expenseData.quantity,
+				total: Number(expenseData.total),
+				date: expenseData.date.split("T")[0],
+				notes: expenseData.notes,
+			});
+			setDepartmentFilter(expenseData.departmentId);
+			setCategoryFilter(expenseData.expenseCatId);
+		}
+	}, [expenseData, reset]);
 
-	const { mutate: updateExpenseFunction, isPending } = useMutation({
+	// Mutation for updating expense
+	const { mutate: updateExpenseMutation, isPending } = useMutation({
 		mutationFn: updateExpense,
 		onSuccess: () => {
 			toast.success("Expense updated successfully");
 			router.replace(redirectUrl);
 		},
-		onError: (error: any) => {
-			const message =
-				error?.response?.data?.message ||
-				error?.message ||
-				"Failed to update expense";
-			toast.error(message);
+		onError: (error: Error) => {
+			toast.error(error.message || "Failed to update expense");
 		},
 	});
 
-	const onSubmit = (data: UpdateExpenseFormData) => {
-		try {
-			const formattedData = {
-				...data,
-				id: expenseId,
-				date: new Date(data.date).toISOString(),
-			};
-			updateExpenseFunction(formattedData);
-		} catch (error) {
-			console.error(error);
-		}
+	const onSubmit = (data) => {
+		updateExpenseMutation({
+			expenseId: expenseId!,
+			data,
+		});
 	};
 
 	return (
@@ -196,7 +178,7 @@ export default function ExpenseUpdatePage({
 							<div className="flex items-start gap-4">
 								<Label
 									htmlFor="departmentId"
-									className="w-32 text-xs text-right pt-2"
+									className="w-32 pt-2 text-right text-xs"
 								>
 									Department
 								</Label>
@@ -208,16 +190,17 @@ export default function ExpenseUpdatePage({
 											<Select
 												onValueChange={(value) => {
 													field.onChange(value);
-													setDepartId(value);
+													setDepartmentFilter(value);
+													setValue("employeeId", ""); // Reset employee when department changes
 												}}
 												value={field.value}
 											>
-												<SelectTrigger className="w-full">
+												<SelectTrigger>
 													<SelectValue placeholder="Select Department" />
 												</SelectTrigger>
 												<SelectContent>
 													<SelectGroup>
-														{departments?.map((department: any) => (
+														{departments.map((department) => (
 															<SelectItem
 																key={department.id}
 																value={department.id}
@@ -230,9 +213,9 @@ export default function ExpenseUpdatePage({
 											</Select>
 										)}
 									/>
-									{errors?.departmentId && (
+									{errors.departmentId && (
 										<p className="text-sm text-red-500">
-											{errors?.departmentId?.message}
+											{errors.departmentId.message}
 										</p>
 									)}
 								</div>
@@ -240,7 +223,7 @@ export default function ExpenseUpdatePage({
 
 							{/* Employee Select */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="employeeId" className="w-32 text-right pt-2">
+								<Label htmlFor="employeeId" className="w-32 pt-2 text-right">
 									Employee
 								</Label>
 								<div className="flex-1 space-y-1">
@@ -251,15 +234,16 @@ export default function ExpenseUpdatePage({
 											<Select
 												onValueChange={field.onChange}
 												value={field.value}
+												disabled={!departmentFilter}
 											>
-												<SelectTrigger className="w-full">
+												<SelectTrigger>
 													<SelectValue placeholder="Select Employee" />
 												</SelectTrigger>
 												<SelectContent>
 													<SelectGroup>
-														{filteredEmployees?.map((e: any) => (
-															<SelectItem key={e.id} value={e.id}>
-																{e.firstName} {e.lastName}
+														{filteredEmployees?.map((employee) => (
+															<SelectItem key={employee.id} value={employee.id}>
+																{employee.firstName} {employee.lastName}
 															</SelectItem>
 														))}
 													</SelectGroup>
@@ -277,7 +261,7 @@ export default function ExpenseUpdatePage({
 
 							{/* Expense Category Select */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="expenseCatId" className="w-32 text-right pt-2">
+								<Label htmlFor="expenseCatId" className="w-32 pt-2 text-right">
 									Expense Category
 								</Label>
 								<div className="flex-1 space-y-1">
@@ -288,21 +272,19 @@ export default function ExpenseUpdatePage({
 											<Select
 												onValueChange={(value) => {
 													field.onChange(value);
-													setExpCatId(value);
+													setCategoryFilter(value);
+													setValue("productId", ""); // Reset product when category changes
 												}}
 												value={field.value}
 											>
-												<SelectTrigger className="w-full">
-													<SelectValue placeholder="Select Expense Category" />
+												<SelectTrigger>
+													<SelectValue placeholder="Select Category" />
 												</SelectTrigger>
 												<SelectContent>
 													<SelectGroup>
-														{expenseCatData?.map((category: any) => (
-															<SelectItem
-																key={category?.id}
-																value={category?.id}
-															>
-																{category?.name}
+														{expenseCategories.map((category) => (
+															<SelectItem key={category.id} value={category.id}>
+																{category.name}
 															</SelectItem>
 														))}
 													</SelectGroup>
@@ -320,7 +302,7 @@ export default function ExpenseUpdatePage({
 
 							{/* Product Select */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="productId" className="w-32 text-right pt-2">
+								<Label htmlFor="productId" className="w-32 pt-2 text-right">
 									Product
 								</Label>
 								<div className="flex-1 space-y-1">
@@ -331,15 +313,16 @@ export default function ExpenseUpdatePage({
 											<Select
 												onValueChange={field.onChange}
 												value={field.value}
+												disabled={!categoryFilter}
 											>
-												<SelectTrigger className="w-full">
+												<SelectTrigger>
 													<SelectValue placeholder="Select Product" />
 												</SelectTrigger>
 												<SelectContent>
 													<SelectGroup>
-														{filteredProducts?.map((product: any) => (
-															<SelectItem key={product?.id} value={product?.id}>
-																{product?.name}
+														{filteredProducts?.map((product) => (
+															<SelectItem key={product.id} value={product.id}>
+																{product.name}
 															</SelectItem>
 														))}
 													</SelectGroup>
@@ -357,13 +340,14 @@ export default function ExpenseUpdatePage({
 
 							{/* Amount */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="amount" className="w-32 text-right pt-2">
+								<Label htmlFor="amount" className="w-32 pt-2 text-right">
 									Amount
 								</Label>
 								<div className="flex-1 space-y-1">
 									<Input
 										type="number"
 										step="0.01"
+										min="0.01"
 										{...register("amount", { valueAsNumber: true })}
 									/>
 									{errors.amount && (
@@ -376,12 +360,13 @@ export default function ExpenseUpdatePage({
 
 							{/* Quantity */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="quantity" className="w-32 text-right pt-2">
+								<Label htmlFor="quantity" className="w-32 pt-2 text-right">
 									Quantity
 								</Label>
 								<div className="flex-1 space-y-1">
 									<Input
 										type="number"
+										min="1"
 										{...register("quantity", { valueAsNumber: true })}
 									/>
 									{errors.quantity && (
@@ -392,9 +377,9 @@ export default function ExpenseUpdatePage({
 								</div>
 							</div>
 
-							{/* Total */}
+							{/* Total (readonly) */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="total" className="w-32 text-right pt-2">
+								<Label htmlFor="total" className="w-32 pt-2 text-right">
 									Total
 								</Label>
 								<div className="flex-1 space-y-1">
@@ -413,7 +398,7 @@ export default function ExpenseUpdatePage({
 
 							{/* Date */}
 							<div className="flex items-start gap-4">
-								<Label htmlFor="date" className="w-32 text-right pt-2">
+								<Label htmlFor="date" className="w-32 pt-2 text-right">
 									Date
 								</Label>
 								<div className="flex-1 space-y-1">
@@ -426,9 +411,9 @@ export default function ExpenseUpdatePage({
 								</div>
 							</div>
 
-							{/* Notes */}
+							{/* Notes (full width) */}
 							<div className="flex items-start gap-4 md:col-span-2">
-								<Label htmlFor="notes" className="w-32 text-right pt-2">
+								<Label htmlFor="notes" className="w-32 pt-2 text-right">
 									Notes
 								</Label>
 								<div className="flex-1 space-y-1">

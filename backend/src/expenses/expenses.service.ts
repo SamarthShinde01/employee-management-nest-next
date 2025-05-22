@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateExpenseDto, UpdateExpenseDto } from './dto/expense.dto';
 import { format, startOfDay } from 'date-fns';
@@ -92,10 +96,10 @@ export class ExpensesService {
     return expense;
   }
 
-  async updateExpense(expenseId: string, data: UpdateExpenseDto) {
+  async updateExpense(expenseId: string, data: any) {
     const request = data;
 
-    const expense = await this.prisma.expense.findFirst({
+    const expense = await this.prisma.expense.findUnique({
       where: { isDeleted: false, id: expenseId },
     });
 
@@ -113,10 +117,14 @@ export class ExpensesService {
         amount: request.amount || expense.amount,
         quantity: request.quantity || expense.quantity,
         total: request.total || expense.total,
-        date: request.date || expense.date,
+        date: new Date(request.date) || expense.date,
         notes: request.notes || expense.notes,
       },
     });
+
+    if (!updatedExpense) {
+      throw new BadRequestException('Expense is not updated');
+    }
 
     return updatedExpense;
   }
