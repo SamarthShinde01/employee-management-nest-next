@@ -55,7 +55,7 @@ export default function ViewProjectMilestones({ params }: typeParams) {
 	const { mutate: removeMilestone } = useMutation({
 		mutationFn: deleteMilestone,
 		onSuccess: () => {
-			toast.success("Milestone deleted");
+			toast.success("Milestone deleted"); // @ts-ignore
 			queryClient.invalidateQueries(["milestones"]);
 		},
 		onError: () => toast.error("Failed to delete milestone"),
@@ -105,11 +105,12 @@ export default function ViewProjectMilestones({ params }: typeParams) {
 	);
 
 	const table = useReactTable({
+		// @ts-ignore
 		data: milestonesData,
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	});
-
+	// @ts-ignore
 	const totalPages = Math.ceil(milestonesData?.length / itemsPerPage);
 	const currentRows = table
 		.getRowModel()

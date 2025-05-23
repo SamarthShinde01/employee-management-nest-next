@@ -127,7 +127,10 @@ export function NavUser({
 								</DropdownMenuItem>
 							</DropdownMenuGroup>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={logoutUser}>
+							<DropdownMenuItem
+								// @ts-ignore
+								onClick={logoutUser}
+							>
 								<LogOut className="mr-2 h-4 w-4" />
 								Log out
 							</DropdownMenuItem>

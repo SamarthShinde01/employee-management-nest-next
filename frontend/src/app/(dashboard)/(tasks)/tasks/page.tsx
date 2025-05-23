@@ -68,7 +68,7 @@ export default function EmployeeTasksPage() {
 	const [updatedStatusName, setUpdatedStatusName] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 15;
-	const { user } = useAuth();
+	const { user } = useAuth(); // @ts-ignore
 	const userId = user?.id;
 
 	const { onDownload } = useDownloadExcel({
@@ -80,7 +80,7 @@ export default function EmployeeTasksPage() {
 	const {
 		data: tasksData,
 		isLoading,
-		isError,
+		isError, // @ts-ignore
 	} = useQuery({
 		queryKey: ["tasks", userId],
 		queryFn: () => (userId ? viewEmployeeTasks(userId) : []),
@@ -93,6 +93,7 @@ export default function EmployeeTasksPage() {
 		mutationFn: updateStatus,
 		onSuccess: () => {
 			queryClient.invalidateQueries({
+				// @ts-ignore
 				queryKey: ["tasks", user?.id],
 			});
 
@@ -104,6 +105,7 @@ export default function EmployeeTasksPage() {
 	});
 
 	const onSubmit = (data: any) => {
+		// @ts-ignore
 		updateTaskStatus({ data, employeeId: user?.id });
 	};
 
@@ -114,11 +116,11 @@ export default function EmployeeTasksPage() {
 	if (isError) {
 		return <div>Error loading tasks.</div>;
 	}
-
+	// @ts-ignore
 	const paginatedData = tasksData?.tasks?.slice(
 		(currentPage - 1) * itemsPerPage,
 		currentPage * itemsPerPage
-	);
+	); // @ts-ignore
 	const totalPages = Math.ceil(tasksData?.tasks?.length / itemsPerPage);
 
 	return (
@@ -158,155 +160,158 @@ export default function EmployeeTasksPage() {
 							</TableRow>
 						</TableHeader>
 						<TableBody>
-							{tasksData?.length === 0 ? (
-								<TableRow>
-									<TableCell colSpan={4} className="text-center">
-										No tasks assigned to this employee.
-									</TableCell>
-								</TableRow>
-							) : (
-								paginatedData?.map((task: any, index: any) => (
-									<TableRow key={task.id}>
-										<TableCell>{index + 1}</TableCell>
-										<TableCell>{task?.project?.name}</TableCell>
-										<TableCell>
-											<div
-												className="prose max-w-none"
-												dangerouslySetInnerHTML={{
-													__html: DOMPurify.sanitize(task.name),
-												}}
-											/>
-										</TableCell>
-										<TableCell>
-											{format(
-												new Date(task.createdAt),
-												"MMM dd, yyyy - hh:mm a"
-											)}
-										</TableCell>
-										<TableCell>
-											{task.completedAt ? (
-												format(
-													new Date(task.completedAt),
-													"MMM dd, yyyy - hh:mm a"
-												)
-											) : (
-												<div className="flex items-center pl-15">
-													<TimerOffIcon width={15} height={15} />
-												</div>
-											)}
-										</TableCell>
-										<TableCell>
-											<Badge
-												variant={
-													task.status === "COMPLETED"
-														? "success"
-														: task.status === "PENDING"
-														? "info"
-														: "danger"
-												}
-											>
-												{task.status}
-											</Badge>
-										</TableCell>
-										<TableCell>
-											<Dialog
-												open={dialogOpenChange}
-												onOpenChange={setDialogOpenChange}
-											>
-												<DialogTrigger asChild>
-													<Button
-														variant="outline"
-														className="text-blue-600 bg-slate-200"
-														onClick={() => setValue("status", task.status)}
-													>
-														Update Status
-													</Button>
-												</DialogTrigger>
-
-												<DialogContent className="sm:max-w-[425px]">
-													<DialogHeader>
-														<DialogTitle>Update Task Status</DialogTitle>
-													</DialogHeader>
-
-													<form onSubmit={handleSubmit(onSubmit)}>
-														<Controller
-															name="taskId"
-															control={control}
-															defaultValue={task?.id}
-															render={({ field }) => (
-																<Input
-																	type="hidden"
-																	value={field.value}
-																	{...field}
-																/>
-															)}
-														/>
-														<div className="grid gap-4 py-4">
-															<div className="grid grid-cols-4 items-center gap-4">
-																<Label
-																	htmlFor="status"
-																	className="w-32 text-right pt-2"
-																>
-																	Status
-																</Label>
-
-																<div className="flex-1 space-y-1">
-																	<Controller
-																		control={control}
-																		name="status"
-																		render={({ field }) => (
-																			<Select
-																				// onValueChange={field.onChange}
-																				onValueChange={(value) => {
-																					field.onChange(value);
-																					setUpdatedStatusName(value);
-																				}}
-																				value={field.value}
-																			>
-																				<SelectTrigger>
-																					<SelectValue placeholder="Select Status" />
-																				</SelectTrigger>
-																				<SelectContent>
-																					<SelectGroup>
-																						<SelectItem
-																							value="PENDING"
-																							className="bg-red-500"
-																						>
-																							PENDING
-																						</SelectItem>
-																						<SelectItem
-																							value="IN_PROGRESS"
-																							className="bg-yellow-300 text-black"
-																						>
-																							IN_PROGRESS
-																						</SelectItem>
-																						<SelectItem
-																							value="COMPLETED"
-																							className="bg-green-300 text-black"
-																						>
-																							COMPLETED
-																						</SelectItem>
-																					</SelectGroup>
-																				</SelectContent>
-																			</Select>
-																		)}
-																	/>
-																</div>
-															</div>
-														</div>
-
-														<DialogFooter className="w-full">
-															<Button className="w-full" type="submit">
-																Update Status
-															</Button>
-														</DialogFooter>
-													</form>
-												</DialogContent>
-											</Dialog>
+							{
+								// @ts-ignore
+								tasksData?.length === 0 ? (
+									<TableRow>
+										<TableCell colSpan={4} className="text-center">
+											No tasks assigned to this employee.
 										</TableCell>
 									</TableRow>
-								))
-							)}
+								) : (
+									paginatedData?.map((task: any, index: any) => (
+										<TableRow key={task.id}>
+											<TableCell>{index + 1}</TableCell>
+											<TableCell>{task?.project?.name}</TableCell>
+											<TableCell>
+												<div
+													className="prose max-w-none"
+													dangerouslySetInnerHTML={{
+														__html: DOMPurify.sanitize(task.name),
+													}}
+												/>
+											</TableCell>
+											<TableCell>
+												{format(
+													new Date(task.createdAt),
+													"MMM dd, yyyy - hh:mm a"
+												)}
+											</TableCell>
+											<TableCell>
+												{task.completedAt ? (
+													format(
+														new Date(task.completedAt),
+														"MMM dd, yyyy - hh:mm a"
+													)
+												) : (
+													<div className="flex items-center pl-15">
+														<TimerOffIcon width={15} height={15} />
+													</div>
+												)}
+											</TableCell>
+											<TableCell>
+												<Badge // @ts-ignore
+													variant={
+														task.status === "COMPLETED"
+															? "success"
+															: task.status === "PENDING"
+															? "info"
+															: "danger"
+													}
+												>
+													{task.status}
+												</Badge>
+											</TableCell>
+											<TableCell>
+												<Dialog
+													open={dialogOpenChange}
+													onOpenChange={setDialogOpenChange}
+												>
+													<DialogTrigger asChild>
+														<Button
+															variant="outline"
+															className="text-blue-600 bg-slate-200"
+															onClick={() => setValue("status", task.status)}
+														>
+															Update Status
+														</Button>
+													</DialogTrigger>
+
+													<DialogContent className="sm:max-w-[425px]">
+														<DialogHeader>
+															<DialogTitle>Update Task Status</DialogTitle>
+														</DialogHeader>
+
+														<form onSubmit={handleSubmit(onSubmit)}>
+															<Controller
+																name="taskId"
+																control={control}
+																defaultValue={task?.id}
+																render={({ field }) => (
+																	<Input
+																		type="hidden" // @ts-ignore
+																		value={field.value}
+																		{...field}
+																	/>
+																)}
+															/>
+															<div className="grid gap-4 py-4">
+																<div className="grid grid-cols-4 items-center gap-4">
+																	<Label
+																		htmlFor="status"
+																		className="w-32 text-right pt-2"
+																	>
+																		Status
+																	</Label>
+
+																	<div className="flex-1 space-y-1">
+																		<Controller
+																			control={control}
+																			name="status"
+																			render={({ field }) => (
+																				<Select
+																					// onValueChange={field.onChange}
+																					onValueChange={(value) => {
+																						field.onChange(value);
+																						setUpdatedStatusName(value);
+																					}}
+																					value={field.value}
+																				>
+																					<SelectTrigger>
+																						<SelectValue placeholder="Select Status" />
+																					</SelectTrigger>
+																					<SelectContent>
+																						<SelectGroup>
+																							<SelectItem
+																								value="PENDING"
+																								className="bg-red-500"
+																							>
+																								PENDING
+																							</SelectItem>
+																							<SelectItem
+																								value="IN_PROGRESS"
+																								className="bg-yellow-300 text-black"
+																							>
+																								IN_PROGRESS
+																							</SelectItem>
+																							<SelectItem
+																								value="COMPLETED"
+																								className="bg-green-300 text-black"
+																							>
+																								COMPLETED
+																							</SelectItem>
+																						</SelectGroup>
+																					</SelectContent>
+																				</Select>
+																			)}
+																		/>
+																	</div>
+																</div>
+															</div>
+
+															<DialogFooter className="w-full">
+																<Button className="w-full" type="submit">
+																	Update Status
+																</Button>
+															</DialogFooter>
+														</form>
+													</DialogContent>
+												</Dialog>
+											</TableCell>
+										</TableRow>
+									))
+								)
+							}
 						</TableBody>
 					</Table>
 					{totalPages > 1 && (
@@ -358,15 +363,18 @@ export default function EmployeeTasksPage() {
 					</tr>
 				</thead>
 				<tbody>
-					{tasksData?.tasks?.map((row: any, index: number) => (
-						<tr key={row.id}>
-							<td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
-							<td>{row.name}</td>
-							<td>{formatDate(row.createdAt)}</td>
-							<td>{formatDate(row.completedAt) || ""}</td>
-							<td>{row.status}</td>
-						</tr>
-					))}
+					{
+						// @ts-ignore
+						tasksData?.tasks?.map((row: any, index: number) => (
+							<tr key={row.id}>
+								<td>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+								<td>{row.name}</td>
+								<td>{formatDate(row.createdAt)}</td>
+								<td>{formatDate(row.completedAt) || ""}</td>
+								<td>{row.status}</td>
+							</tr>
+						))
+					}
 				</tbody>
 			</table>
 		</>

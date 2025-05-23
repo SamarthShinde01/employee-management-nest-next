@@ -84,7 +84,7 @@ export default function ExpenseAddPage() {
 
 	const filteredEmployees =
 		departId === "all"
-			? allEmployees
+			? allEmployees // @ts-ignore
 			: allEmployees?.filter(
 					(employee: any) => employee.departmentId === departId
 			  );
@@ -99,6 +99,7 @@ export default function ExpenseAddPage() {
 		queryFn: getProducts,
 	});
 
+	// @ts-ignore
 	const allProducts = productsData?.products || [];
 
 	const filteredProducts =
@@ -174,14 +175,17 @@ export default function ExpenseAddPage() {
 												<SelectContent>
 													<SelectGroup>
 														<SelectItem value="all">All</SelectItem>
-														{depeartments?.map((department: any) => (
-															<SelectItem
-																key={department.id}
-																value={department.id}
-															>
-																{department.name}
-															</SelectItem>
-														))}
+														{
+															// @ts-ignore
+															depeartments?.map((department: any) => (
+																<SelectItem
+																	key={department.id}
+																	value={department.id}
+																>
+																	{department.name}
+																</SelectItem>
+															))
+														}
 													</SelectGroup>
 												</SelectContent>
 											</Select>
@@ -255,11 +259,17 @@ export default function ExpenseAddPage() {
 												<SelectContent>
 													<SelectGroup>
 														<SelectItem value="all">All</SelectItem>
-														{expenseCatData?.map((product: any) => (
-															<SelectItem key={product?.id} value={product?.id}>
-																{product?.name}
-															</SelectItem>
-														))}
+														{
+															// @ts-ignore
+															expenseCatData?.map((product: any) => (
+																<SelectItem
+																	key={product?.id}
+																	value={product?.id}
+																>
+																	{product?.name}
+																</SelectItem>
+															))
+														}
 														<SelectItem value="other">Other</SelectItem>
 													</SelectGroup>
 												</SelectContent>

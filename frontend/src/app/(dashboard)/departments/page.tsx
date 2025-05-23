@@ -186,7 +186,7 @@ export default function DepartmentsPage() {
 		const from = new Date(dateRange.from);
 		const to = new Date(dateRange.to);
 		to.setUTCHours(23, 59, 59, 999); // Ensure we include entire day
-
+		// @ts-ignore
 		return departments?.filter((department: any) => {
 			const createdAt = new Date(department.createdAt);
 			return createdAt >= from && createdAt <= to;

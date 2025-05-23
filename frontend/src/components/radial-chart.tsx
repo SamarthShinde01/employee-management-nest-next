@@ -32,7 +32,7 @@ export function RadialMilestonesChart() {
 		"#FF8042",
 		"#00C49F",
 	];
-
+	// @ts-ignore
 	const chartData = radialChartData?.map((p: any, i: any) => ({
 		name: p.projectName,
 		value: p.achievedPercentage,

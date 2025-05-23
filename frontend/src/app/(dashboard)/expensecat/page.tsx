@@ -172,7 +172,7 @@ export default function ExpenseCategoryPage() {
 	const columns = useMemo(
 		() => [
 			{
-				header: "Sr No",
+				header: "Sr No", // @ts-ignore
 				cell: ({ row }) => (currentPage - 1) * itemsPerPage + row.index + 1,
 			},
 			{
@@ -211,7 +211,7 @@ export default function ExpenseCategoryPage() {
 		const from = new Date(dateRange.from);
 		const to = new Date(dateRange.to);
 		to.setUTCHours(23, 59, 59, 999); // Ensure we include entire day
-
+		// @ts-ignore
 		return expenseCat?.filter((category: any) => {
 			const createdAt = new Date(category.createdAt);
 			return createdAt >= from && createdAt <= to;

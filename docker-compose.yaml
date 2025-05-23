@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  backend:
+    image: backend
+    container_name: employee-backend
+    ports:
+      - "5001:5001"
+    environment:
+      DATABASE_URL: "mysql://root:@mysql:3306/employee-project"
+      JWT_SECRET: supersecretkey
+      JWT_EXPIRES_IN: 1d
+      NODE_ENV: development
+      PORT: 5001
+      CLIENT_ENDPOINT: "http://frontend:3000"
+    depends_on:
+      - mysql
+
+  frontend:
+    image: frontend
+    container_name: employee-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: "http://backend:5001"
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_DATABASE: employee-project
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

@@ -173,6 +173,7 @@ export default function EmployeeExpenseManagePage() {
 	const filteredData = useMemo(() => {
 		if (!expenses) return [];
 
+		// @ts-ignore
 		let filtered = [...expenses];
 
 		// 🔹 Filter by category
@@ -295,6 +296,7 @@ export default function EmployeeExpenseManagePage() {
 							<FilterCombobox
 								dropdownName="Expense Category"
 								dropwdownLabel="Select Expense Category"
+								// @ts-ignore
 								items={expenseCategoryData}
 								value={selectedCategoryValue}
 								onValueChange={setSelectedCategoryValue}

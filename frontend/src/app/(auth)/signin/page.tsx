@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,70 +70,72 @@ export default function SignInForm({
 
 	return (
 		<AuthPage>
-			{isError && toast("Invalid email or password")}
+			{isError ? (
+				toast("Invalid email or password")
+			) : (
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className={cn("flex flex-col gap-6", className)}
+					>
+						<div className="flex flex-col items-center gap-2 text-center">
+							<h1 className="text-2xl font-bold">Login to your account</h1>
+							<p className="text-muted-foreground text-sm text-balance">
+								Enter your email below to login to your account
+							</p>
+						</div>
 
-			<Form {...form}>
-				<form
-					onSubmit={form.handleSubmit(onSubmit)}
-					className={cn("flex flex-col gap-6", className)}
-				>
-					<div className="flex flex-col items-center gap-2 text-center">
-						<h1 className="text-2xl font-bold">Login to your account</h1>
-						<p className="text-muted-foreground text-sm text-balance">
-							Enter your email below to login to your account
-						</p>
-					</div>
+						<div className="grid gap-6">
+							{/* Email */}
+							<FormField
+								control={form.control}
+								name="email"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Email</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												type="email"
+												placeholder="m@example.com"
+												autoFocus
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-					<div className="grid gap-6">
-						{/* Email */}
-						<FormField
-							control={form.control}
-							name="email"
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Email</FormLabel>
-									<FormControl>
-										<Input
-											{...field}
-											type="email"
-											placeholder="m@example.com"
-											autoFocus
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
+							{/* Password */}
+							<FormField
+								control={form.control}
+								name="password"
+								render={({ field }) => (
+									<FormItem>
+										<div className="flex items-center">
+											<FormLabel>Password</FormLabel>
+											<a
+												href="#"
+												className="ml-auto text-sm underline-offset-4 hover:underline"
+											>
+												Forgot your password?
+											</a>
+										</div>
+										<FormControl>
+											<Input {...field} type="password" />
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
-						{/* Password */}
-						<FormField
-							control={form.control}
-							name="password"
-							render={({ field }) => (
-								<FormItem>
-									<div className="flex items-center">
-										<FormLabel>Password</FormLabel>
-										<a
-											href="#"
-											className="ml-auto text-sm underline-offset-4 hover:underline"
-										>
-											Forgot your password?
-										</a>
-									</div>
-									<FormControl>
-										<Input {...field} type="password" />
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
-						/>
-
-						<Button type="submit" disabled={isPending} className="w-full">
-							Login
-						</Button>
-					</div>
-				</form>
-			</Form>
+							<Button type="submit" disabled={isPending} className="w-full">
+								Login
+							</Button>
+						</div>
+					</form>
+				</Form>
+			)}
 		</AuthPage>
 	);
 }

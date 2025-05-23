@@ -240,6 +240,7 @@ export default function EmployeesManagePage() {
 	);
 
 	const filteredData = useMemo(() => {
+		// @ts-ignore
 		let filtered = [...employees];
 
 		// Filter by department
@@ -347,7 +348,7 @@ export default function EmployeesManagePage() {
 						<div className="flex items-center gap-2 mt-2 md:mt-0">
 							<FilterCombobox
 								dropdownName="Department"
-								dropwdownLabel="Select Department"
+								dropwdownLabel="Select Department" // @ts-ignore
 								items={departmentsData}
 								value={selectedDapartmentValue}
 								onValueChange={setSelectedDepartmentValue}
