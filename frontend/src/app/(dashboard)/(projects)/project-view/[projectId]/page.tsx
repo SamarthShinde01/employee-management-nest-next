@@ -9,14 +9,10 @@ import { useParams, useRouter } from "next/navigation";
 import { getProjectById } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 import DashboardHeader from "@/components/dashboard-header";
-import { useRef } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 const ProjectView = () => {
 	const router = useRouter();
 	const { projectId } = useParams<{ projectId: string }>();
-	const contentRef = useRef<HTMLDivElement>(null);
 
 	const { data: project, isLoading } = useQuery({
 		queryKey: ["project", projectId],
@@ -26,34 +22,6 @@ const ProjectView = () => {
 
 	if (isLoading) return <div>Loading...</div>;
 	if (!project) return <div>Project not found</div>;
-
-	const handleDownloadPDF = async () => {
-		if (!contentRef.current) return;
-
-		// Create a clone to modify
-		const node = contentRef.current.cloneNode(true) as HTMLElement;
-		node.classList.add("force-fallbacks");
-
-		document.body.appendChild(node);
-
-		try {
-			const canvas = await html2canvas(node, {
-				backgroundColor: "#ffffff",
-				scale: 2, //For better quality
-				useCORS: true,
-			});
-
-			const pdf = new jsPDF("p", "mm", "a4");
-			const imgData = canvas.toDataURL("image/png");
-			const pdfWidth = pdf.internal.pageSize.getWidth();
-			const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-
-			pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-			pdf.save("project-details.pdf");
-		} finally {
-			document.body.removeChild(node);
-		}
-	};
 
 	return (
 		<>
@@ -69,7 +37,7 @@ const ProjectView = () => {
 						Back to Projects
 					</Button>
 					<div className="flex gap-2">
-						<Button variant="outline" onClick={handleDownloadPDF}>
+						<Button variant="outline">
 							<Printer className="mr-2 h-4 w-4" />
 							Print
 						</Button>
@@ -80,7 +48,7 @@ const ProjectView = () => {
 					</div>
 				</div>
 
-				<div ref={contentRef} className="bg-muted/50 p-6 rounded-lg shadow-sm">
+				<div className="bg-muted/50 p-6 rounded-lg shadow-sm">
 					{/* Project Header */}
 					<div className="border-b pb-6 mb-6 print-section">
 						<div className="flex justify-between items-start">

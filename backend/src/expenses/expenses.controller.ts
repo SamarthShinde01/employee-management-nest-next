@@ -4,12 +4,11 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
   Post,
   Put,
 } from '@nestjs/common';
 import { ExpensesService } from './expenses.service';
-import { CreateExpenseDto, UpdateExpenseDto } from './dto/expense.dto';
+import { CreateExpenseDto } from './dto/expense.dto';
 
 @Controller('api/expenses')
 export class ExpensesController {
