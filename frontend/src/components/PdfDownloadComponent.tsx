@@ -1,7 +1,7 @@
 import { formatDate, formatINR } from "@/lib/utils";
 
 // @ts-ignore
-export default function ExportDefaultFunction({ project }: unknown) {
+export default function ExportDefaultFunction({ project }: any) {
 	const htmlContent = `
     <!DOCTYPE html>
     <html lang="en">
