@@ -4,6 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import puppeteer from 'puppeteer';
+
 @Injectable()
 export class ProjectsService {
   constructor(private prisma: PrismaService) {}
@@ -329,5 +331,38 @@ export class ProjectsService {
     });
 
     return { message: `Status updated to ${updateStatus.status}` };
+  }
+
+  async generatePdf(data: { html: any }, res) {
+    const { html } = data;
+
+    if (!html) {
+      return res.status(400).send('No HTML provided');
+    }
+
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+    const page = await browser.newPage();
+
+    // Set content from HTML string
+    await page.setContent(html, {
+      waitUntil: 'networkidle0', // wait until fully loaded
+    });
+
+    const pdfBuffer = await page.pdf({
+      format: 'A4',
+      printBackground: true,
+    });
+
+    await browser.close();
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=project-info.pdf',
+      'Content-Length': pdfBuffer.length,
+    });
+
+    res.send(pdfBuffer);
   }
 }

@@ -3,9 +3,11 @@ import {
   Controller,
   Delete,
   Get,
+  Header,
   Param,
   Post,
   Put,
+  Res,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 
@@ -44,5 +46,12 @@ export class ProjectsController {
     data: { status: string },
   ) {
     return this.projectsService.projectStatus(projectId, data);
+  }
+
+  @Post('/generate-pdf')
+  @Header('Content-Type', 'application/pdf')
+  @Header('Content-Disposition', 'attachment; filename=project-report.pdf')
+  async generatePdf(@Body() data: { html: any }, @Res() res: Response) {
+    return await this.projectsService.generatePdf(data, res);
   }
 }

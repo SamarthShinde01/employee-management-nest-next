@@ -1,0 +1,35 @@
+body,
+.dark,
+.light {
+	background-color: white !important;
+	color: black !important;
+}
+
+*,
+*::before,
+*::after {
+	box-shadow: none !important;
+	text-shadow: none !important;
+	transition: none !important;
+}
+
+* {
+	border-color: black !important;
+}
+
+body,
+div,
+section,
+article {
+	background-image: none !important;
+}
+
+a::after {
+	content: " (" attr(href) ")";
+	font-size: smaller;
+}
+
+body {
+	font-size: 12pt !important;
+	line-height: 1.4 !important;
+}
